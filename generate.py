@@ -1,8 +1,10 @@
+import sys
+import traceback
 import time
 import glob
 import os
 import pyinotify
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, TemplateError
 
 class EventHandler(pyinotify.ProcessEvent):
     def process(self, event):
@@ -61,7 +63,13 @@ def render(template_name):
 
 
 
-        template.stream(**context).dump(f)
+        try:
+            template.stream(**context).dump(f)
+        except TemplateError, e:
+            print "Error rendering {}: {}".format(template_name, e)
+            f.write("<pre>\n")
+            traceback.print_exc(file=f)
+            f.write("\n</pre>")
     elapsed = (time.time() - start) * 1000
     print "Rendered {} in {:.2f} ms".format(template_name, elapsed)
 

@@ -7,7 +7,9 @@ from jinja2 import Environment, FileSystemLoader
 class EventHandler(pyinotify.ProcessEvent):
     def process(self, event):
         name = os.path.basename(event.pathname)
-        if event.pathname[-5:] == ".html" and name[0] != '.':
+        if event.path == os.path.join(TEMPLATES_DIR, "layout"):
+            render_all()
+        elif event.pathname[-5:] == ".html" and name[0] != '.':
             render(name)
 
     def process_IN_CREATE(self, event):
@@ -63,11 +65,13 @@ def render(template_name):
     elapsed = (time.time() - start) * 1000
     print "Rendered {} in {:.2f} ms".format(template_name, elapsed)
 
-
-
-def main():
+def render_all():
+    print "Re-rendering all files"
     for x in glob.glob(os.path.join(TEMPLATES_DIR, '*.html')):
         render(os.path.basename(x))
+
+def main():
+    render_all()
     monitor()
 
 if __name__ == "__main__":

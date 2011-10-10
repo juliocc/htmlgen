@@ -1,3 +1,4 @@
+# coding: utf-8
 import sys
 import traceback
 import time
@@ -45,6 +46,7 @@ def template_test():
     return locals()
 
 def render(template_name):
+    print "Rendering {}".format(template_name)
     start = time.time()
     template = env.get_template(template_name)
     with open(os.path.join(OUTPUT_DIR, template_name), 'w') as f:
@@ -62,10 +64,9 @@ def render(template_name):
                 print "===> Warning: tempate functions should return dict-like objects: {} returned {}".format(function_name, newdata.__class__.__name__)
 
 
-
         try:
-            template.stream(**context).dump(f)
-        except TemplateError, e:
+            template.stream(**context).dump(f, 'utf-8')
+        except Exception, e:
             print "Error rendering {}: {}".format(template_name, e)
             f.write("<pre>\n")
             traceback.print_exc(file=f)

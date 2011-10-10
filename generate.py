@@ -44,9 +44,10 @@ def render(template_name):
     start = time.time()
     template = env.get_template(template_name)
     with open(os.path.join(OUTPUT_DIR, template_name), 'w') as f:
-        context = {}
+        simplename = os.path.splitext(template_name)[0]
+        context = {"bodyclass": simplename}
 
-        function_name = "template_" + os.path.splitext(template_name)[0]
+        function_name = "template_" + simplename
         function = globals().get(function_name)
         if function is not None:
             print "calling template function {} for template {}".format(function_name, template_name)

@@ -35,6 +35,9 @@ def monitor():
     print "Monitoring for changes in {}. Exit with Ctrl-C".format(TEMPLATES_DIR)
     notifier.loop()
 
+def template_test():
+    return dict(a='Extra variable a', b='Extra variable b')
+
 def render(template_name):
     print "Rendering {}".format(template_name)
     start = time.time()
